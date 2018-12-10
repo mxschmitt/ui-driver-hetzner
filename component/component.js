@@ -50,7 +50,7 @@ export default Ember.Component.extend(NodeDriver, {
       type: '%%DRIVERNAME%%Config',
       serverType: 'cx21', // 4 GB Ram
       serverLocation: 'nbg1', // Nuremberg
-      image: 'ubuntu-16.04',
+      imageId: 1,
       userData: ''
     });
 
