@@ -43,3 +43,9 @@ For other users to see your driver, you need to build it and host the output on 
 * `npm run build`
 * Copy the contents of the `dist` directory onto a webserver.
   * If your Rancher is configured to use HA or SSL, the server must also be available via HTTPS.
+
+
+## Docker
+
+* `docker build -t ui-driver .` to build the image. 
+* `docker run -p 3000:3000 ui-driver` to run it.
