@@ -1,0 +1,115 @@
+define('nodes/components/driver-hetzner/component', ['exports', 'shared/mixins/node-driver'], function (exports, _nodeDriver) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var LAYOUT = "PHNlY3Rpb24gY2xhc3M9Imhvcml6b250YWwtZm9ybSI+CiAge3sjaWYgbmVlZEFQSVRva2VufX0KICA8Zm9ybT4KICAgIDxkaXYgY2xhc3M9Im92ZXItaHIgci1tYjIwIj4KICAgICAgPHNwYW4+QWNjb3VudCBBY2Nlc3M8L3NwYW4+CiAgICA8L2Rpdj4KICAgIDxkaXYgY2xhc3M9InJvdyBmb3JtLWdyb3VwIj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTIiPgogICAgICAgIDxsYWJlbCBjbGFzcz0iZm9ybS1jb250cm9sLXN0YXRpYyI+QVBJIFRva2VuKjwvbGFiZWw+CiAgICAgIDwvZGl2PgogICAgICA8ZGl2IGNsYXNzPSJjb2wtbWQtMTAiPgogICAgICAgIHt7aW5wdXQgdHlwZT0icGFzc3dvcmQiIHZhbHVlPW1vZGVsLmhldHpuZXJDb25maWcuYXBpVG9rZW4gY2xhc3NOYW1lcz0iZm9ybS1jb250cm9sIiBwbGFjZWhvbGRlcj0iWW91ciBIZXR6bmVyIENsb3VkIEFQSSBUb2tlbiJ9fQogICAgICAgIDxwIGNsYXNzPSJoZWxwLWJsb2NrIj5DcmVhdGUgaXQgYnkgc3dpdGNoaW5nIGludG8gdGhlCiAgICAgICAgICA8YSB0YXJnZXQ9Il9ibGFuayIgaHJlZj0iaHR0cHM6Ly9jb25zb2xlLmhldHpuZXIuY2xvdWQiPkhldHpuZXIgQ2xvdWQgQ29uc29sZTwvYT4sIGNob29zaW5nIGEgcHJvamVjdCwgZ28gdG8gQWNjZXNzIOKGkiBUb2tlbnMgYW5kIGNyZWF0ZSBhIG5ldyBBUEkgdG9rZW4gdGhlcmUuPC9wPgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICAge3t0b3AtZXJyb3JzIGVycm9ycz1lcnJvcnN9fQogICAgPGRpdiBjbGFzcz0iZm9vdGVyLWFjdGlvbnMiPgogICAgICB7eyNpZiBnZXR0aW5nRGF0YX19CiAgICAgIDxidXR0b24gY2xhc3M9ImJ0biBiZy1wcmltYXJ5IGJ0bi1kaXNhYmxlZCI+CiAgICAgICAgPGkgY2xhc3M9Imljb24gaWNvbi1zcGlubmVyIGljb24tc3BpbiI+PC9pPiB7e3QgJ2dlbmVyaWMubG9hZGluZyd9fTwvYnV0dG9uPgogICAgICB7e2Vsc2V9fQogICAgICA8YnV0dG9uIHt7YWN0aW9uICJnZXREYXRhIiB9fSBjbGFzcz0iYnRuIGJnLXByaW1hcnkiIGRpc2FibGVkPXt7bm90IG1vZGVsLmhldHpuZXJDb25maWcuYXBpVG9rZW59fT5Db25maWd1cmUgU2VydmVyPC9idXR0b24+CiAgICAgIHt7L2lmfX0KICAgICAgPGJ1dHRvbiB7e2FjdGlvbiAiY2FuY2VsIn19IGNsYXNzPSJidG4gYmctdHJhbnNwYXJlbnQiPnt7dCAnZ2VuZXJpYy5jYW5jZWwnfX08L2J1dHRvbj4KICAgIDwvZGl2PgogIDwvZm9ybT4KICB7e2Vsc2V9fQogIDxkaXYgY2xhc3M9ImNvbnRhaW5lci1mbHVpZCI+CiAgICB7eyEtLSBUaGlzIHBhcnRpYWwgY29udGFpbnMgdGhlIHF1YW50aXR5LCBuYW1lLCBhbmQgZGVzY3JpcHRpb24gZmllbGRzIC0tfX0KICAgIDxkaXYgY2xhc3M9Im92ZXItaHIiPgogICAgICA8c3Bhbj57e3RlbXBsYXRlT3B0aW9uc1RpdGxlfX08L3NwYW4+CiAgICA8L2Rpdj4KICAgIDxkaXYgY2xhc3M9Im92ZXItaHIgci1tdDIwIHItbWIyMCI+CiAgICAgIDxzcGFuPlJlZ2lvbjwvc3Bhbj4KICAgIDwvZGl2PgogICAgPGRpdiBjbGFzcz0icm93IGZvcm0tZ3JvdXAiPgogICAgICA8ZGl2IGNsYXNzPSJjb2wtbWQtMiI+CiAgICAgICAgPGxhYmVsIGNsYXNzPSJmb3JtLWNvbnRyb2wtc3RhdGljIj5SZWdpb248L2xhYmVsPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTEwIj4KICAgICAgICA8c2VsZWN0IGNsYXNzPSJmb3JtLWNvbnRyb2wiIG9uY2hhbmdlPXt7YWN0aW9uIChtdXQgbW9kZWwuaGV0em5lckNvbmZpZy5zZXJ2ZXJMb2NhdGlvbikgdmFsdWU9InRhcmdldC52YWx1ZSIgfX0+CiAgICAgICAgICB7eyNlYWNoIHJlZ2lvbkNob2ljZXMgYXMgfGNob2ljZXx9fQogICAgICAgICAgICA8b3B0aW9uIHZhbHVlPXt7Y2hvaWNlLm5hbWV9fSBzZWxlY3RlZD17e2VxIG1vZGVsLmhldHpuZXJDb25maWcuc2VydmVyTG9jYXRpb24gY2hvaWNlLm5hbWV9fT57e2Nob2ljZS5jaXR5fX08L29wdGlvbj4KICAgICAgICAgIHt7L2VhY2h9fQogICAgICAgIDwvc2VsZWN0PgogICAgICA8L2Rpdj4KICAgIDwvZGl2PgogICAgPGRpdiBjbGFzcz0ib3Zlci1ociByLW10MjAgci1tYjIwIj4KICAgICAgPHNwYW4+U2V0dGluZ3M8L3NwYW4+CiAgICA8L2Rpdj4KICAgIDxkaXYgY2xhc3M9InJvdyBmb3JtLWdyb3VwIj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTIiPgogICAgICAgIDxsYWJlbCBjbGFzcz0iZm9ybS1jb250cm9sLXN0YXRpYyI+SW1hZ2U8L2xhYmVsPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTQiPgogICAgICAgIDxzZWxlY3QgY2xhc3M9ImZvcm0tY29udHJvbCIgb25jaGFuZ2U9e3thY3Rpb24gKG11dCBtb2RlbC5oZXR6bmVyQ29uZmlnLmltYWdlKSB2YWx1ZT0idGFyZ2V0LnZhbHVlIiB9fT4KICAgICAgICAgIHt7I2VhY2ggaW1hZ2VDaG9pY2VzIGFzIHxjaG9pY2V8fX0KICAgICAgICAgICAgPG9wdGlvbiB2YWx1ZT17e2Nob2ljZS5pZH19IHNlbGVjdGVkPXt7ZXEgbW9kZWwuaGV0em5lckNvbmZpZy5pbWFnZSBjaG9pY2UuaWR9fT57e2Nob2ljZS5kZXNjcmlwdGlvbn19PC9vcHRpb24+CiAgICAgICAgICB7ey9lYWNofX0KICAgICAgICA8L3NlbGVjdD4KICAgICAgPC9kaXY+CiAgICAgIDxkaXYgY2xhc3M9ImNvbC1tZC0yIj4KICAgICAgICA8bGFiZWwgY2xhc3M9ImZvcm0tY29udHJvbC1zdGF0aWMiPlNpemU8L2xhYmVsPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTQiPgogICAgICAgIDxzZWxlY3QgY2xhc3M9ImZvcm0tY29udHJvbCIgb25jaGFuZ2U9e3thY3Rpb24gKG11dCBtb2RlbC5oZXR6bmVyQ29uZmlnLnNlcnZlclR5cGUpIHZhbHVlPSJ0YXJnZXQudmFsdWUiIH19PgogICAgICAgICAge3sjZWFjaCBzaXplQ2hvaWNlcyBhcyB8Y2hvaWNlfH19CiAgICAgICAgICAgIDxvcHRpb24gdmFsdWU9e3tjaG9pY2UubmFtZX19IHNlbGVjdGVkPXt7ZXEgbW9kZWwuaGV0em5lckNvbmZpZy5zZXJ2ZXJUeXBlIGNob2ljZS5uYW1lfX0+e3tjaG9pY2UuZGVzY3JpcHRpb259fSAtIHt7Y2hvaWNlLm1lbW9yeX19R0IgTWVtb3J5IC0ge3tjaG9pY2UuZGlza319R0IgRGlzayBzcGFjZTwvb3B0aW9uPgogICAgICAgICAge3svZWFjaH19CiAgICAgICAgPC9zZWxlY3Q+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgICA8ZGl2IGNsYXNzPSJvdmVyLWhyIHItbXQyMCByLW1iMjAiPgogICAgICA8c3Bhbj5Vc2VyIGRhdGE8L3NwYW4+CiAgICA8L2Rpdj4KICAgIDxkaXYgY2xhc3M9InJvdyBmb3JtLWdyb3VwIj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTIiPgogICAgICAgIDxsYWJlbCBjbGFzcz0iZm9ybS1jb250cm9sLXN0YXRpYyI+Q2xvdWQtaW5pdCBDb25maWd1cmF0aW9uIChvcHRpb25hbCk8L2xhYmVsPgogICAgICA8L2Rpdj4KICAgICAgPGRpdiBjbGFzcz0iY29sLW1kLTEwIj4KICAgICAgICA8dGV4dGFyZWEgdmFsdWU9e3ttb2RlbC5oZXR6bmVyQ29uZmlnLnVzZXJEYXRhfX0gb25jaGFuZ2U9e3thY3Rpb24gKG11dCBtb2RlbC5oZXR6bmVyQ29uZmlnLnVzZXJEYXRhKSB2YWx1ZT0idGFyZ2V0LnZhbHVlIiB9fSByb3dzPSIzIiBzdHlsZT0id2lkdGg6IDEwMCU7IHJlc2l6ZTogdmVydGljYWwiPjwvdGV4dGFyZWE+CiAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgICAge3shLS0gVGhpcyBmb2xsb3dpbmcgY29udGFpbnMgdGhlIE5hbWUsIExhYmVscyBhbmQgRW5naW5lIE9wdGlvbnMgZmllbGRzIC0tfX0KICAgICB7e2Zvcm0tbmFtZS1kZXNjcmlwdGlvbiBtb2RlbD1tb2RlbCBuYW1lUmVxdWlyZWQ9dHJ1ZX19CiAgICAge3tmb3JtLXVzZXItbGFiZWxzIGluaXRpYWxMYWJlbHM9bGFiZWxSZXNvdXJjZS5sYWJlbHMgc2V0TGFiZWxzPShhY3Rpb24gJ3NldExhYmVscycpIGV4cGFuZEFsbD1leHBhbmRBbGwgZXhwYW5kPShhY3Rpb24gZXhwYW5kRm4pIH19CiAgICAge3tmb3JtLWVuZ2luZS1vcHRzIG1hY2hpbmU9bW9kZWwgc2hvd0VuZ2luZVVybD1zaG93RW5naW5lVXJsIH19CiAgICAge3shLS0gVGhpcyBjb21wb25lbnQgc2hvd3MgZXJyb3JzIHByb2R1Y2VkIGJ5IHZhbGlkYXRlKCkgaW4gdGhlIGNvbXBvbmVudCAtLX19CiAgICAge3t0b3AtZXJyb3JzIGVycm9ycz1lcnJvcnN9fQogICAgIHt7IS0tIFRoaXMgY29tcG9uZW50IHNob3dzIHRoZSBDcmVhdGUgYW5kIENhbmNlbCBidXR0b25zIC0tfX0KICAgICB7e3NhdmUtY2FuY2VsIHNhdmU9InNhdmUiIGNhbmNlbD0iY2FuY2VsIn19CiAgPC9kaXY+CiAge3svaWZ9fQo8L3NlY3Rpb24+";
+
+  var computed = Ember.computed;
+  var get = Ember.get;
+  var set = Ember.set;
+  var alias = Ember.computed.alias;
+  var service = Ember.inject.service;
+
+  var defaultRadix = 10;
+  var defaultBase = 1024;
+  exports.default = Ember.Component.extend(_nodeDriver.default, {
+    driverName: 'hetzner',
+    needAPIToken: true,
+    config: alias('model.hetznerConfig'),
+    app: service(),
+
+    init: function init() {
+      var decodedLayout = window.atob(LAYOUT);
+      var template = Ember.HTMLBars.compile(decodedLayout, {
+        moduleName: 'nodes/components/driver-hetzner/template'
+      });
+      set(this, 'layout', template);
+
+      this._super.apply(this, arguments);
+    },
+
+    bootstrap: function bootstrap() {
+      var config = get(this, 'globalStore').createRecord({
+        type: 'hetznerConfig',
+        serverType: 'cx21',
+        serverLocation: 'nbg1',
+        imageId: 1,
+        userData: ''
+      });
+
+      set(this, 'model.hetznerConfig', config);
+      set(this, 'model.engineStorageDriver', 'overlay');
+    },
+
+    validate: function validate() {
+      this._super();
+      var errors = get(this, 'errors') || [];
+      if (!get(this, 'model.name')) {
+        errors.push('Name is required');
+      }
+
+      if (parseInt(get(this, 'config.memorySize'), defaultRadix) < defaultBase) {
+        errors.push('Memory Size must be at least 1024 MB');
+      }
+
+      if (get(errors, 'length')) {
+        set(this, 'errors', errors);
+        return false;
+      } else {
+        set(this, 'errors', null);
+        return true;
+      }
+    },
+
+    actions: {
+      getData: function getData() {
+        this.set('gettingData', true);
+        var that = this;
+        Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types')]).then(function (responses) {
+          that.setProperties({
+            errors: [],
+            needAPIToken: false,
+            gettingData: false,
+            regionChoices: responses[0].locations,
+            imageChoices: responses[1].images.filter(function (image) {
+              return !/fedora/.test(image.name);
+            }),
+            sizeChoices: responses[2].server_types
+          });
+        }).catch(function (err) {
+          err.then(function (msg) {
+            that.setProperties({
+              errors: ['Error received from Hetzner Cloud: ' + msg.error.message],
+              gettingData: false
+            });
+          });
+        });
+      }
+    },
+    apiRequest: function apiRequest(path) {
+      return fetch('https://api.hetzner.cloud' + path, {
+        headers: {
+          'Authorization': 'Bearer ' + this.get('model.hetznerConfig.apiToken')
+        }
+      }).then(function (res) {
+        return res.ok ? res.json() : Promise.reject(res.json());
+      });
+    }
+  });
+});;
+define('ui/components/driver-hetzner/component', ['exports', 'nodes/components/driver-hetzner/component'], function (exports, _component) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(exports, 'default', {
+    enumerable: true,
+    get: function () {
+      return _component.default;
+    }
+  });
+});

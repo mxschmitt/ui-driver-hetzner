@@ -48,4 +48,4 @@ For other users to see your driver, you need to build it and host the output on 
 ## Docker
 
 * `docker build -t ui-driver .` to build the image. 
-* `docker run -p 3000:3000 ui-driver` to run it.
+* `docker run -p 3000:3000 -v $(pwd)/dist:/app/dist ui-driver` to run it.
