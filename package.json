@@ -19,24 +19,23 @@
   },
   "homepage": "https://github.com/mxschmitt/ui-driver-hetzner#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.2.3",
     "babel-core": "^6.26.3",
-    "babel-plugin-add-module-exports": "^0.3.2",
+    "babel-plugin-add-module-exports": "^1.0.0",
     "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
     "del": "3.0.0",
     "gulp": "3.9.1",
-    "gulp-babel": "^7.0.1",
+    "gulp-babel": "^8.0.0",
     "gulp-clean": "0.4.0",
     "gulp-concat": "2.6.1",
-    "gulp-connect": "5.5.0",
+    "gulp-connect": "5.7.0",
     "gulp-jshint": "2.1.0",
-    "gulp-replace": "0.6.1",
+    "gulp-replace": "1.0.0",
     "gulp-sourcemaps": "2.6.4",
-    "jshint": "2.9.5",
-    "replace-string": "^1.1.0",
-    "yargs": "11.0.0"
+    "jshint": "2.9.7",
+    "replace-string": "^2.0.0",
+    "yargs": "12.0.5",
+    "@babel/core": "^7.2.2"
   },
-  "dependencies": {
-    "@babel/core": "^7.1.2"
-  }
+  "browserslist": "> 0.25%, not dead"
 }
