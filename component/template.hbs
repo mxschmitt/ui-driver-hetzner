@@ -76,7 +76,9 @@
     </div>
     <div class="row form-group">
       <div class="col-md-2">
-        <label class="form-control-static">Cloud-init Configuration (optional)</label>
+        <label class="form-control-static">
+          <a href="https://cloudinit.readthedocs.io/en/latest/topics/examples.html">Cloud-init Configuration (optional)</a>
+        </label>
       </div>
       <div class="col-md-10">
         <textarea value={{model.hetznerConfig.userData}} onchange={{action (mut model.hetznerConfig.userData) value="target.value" }} rows="3" style="width: 100%; resize: vertical"></textarea>
