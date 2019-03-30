@@ -4,9 +4,9 @@
 
 Rancher 2 UI driver for the [Hetzner Cloud](https://www.hetzner.de/cloud). For the Rancher 1 version check out the readme from the `v1.6` branch which you can find [here](https://github.com/mxschmitt/ui-driver-hetzner/blob/v1.6/README.md).
 
-## Using
+## Usage
 
-* Add a Machine Driver in Rancher 2 (`Global` -> `Custom Drivers` -> `Cluster Drivers`)
+* Add a Machine Driver in Rancher 2 (`Tools` -> `Drivers` -> `Node Drivers`)
 
 | Key | Value |
 | --- | ----- |
