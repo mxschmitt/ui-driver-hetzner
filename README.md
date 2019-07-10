@@ -10,9 +10,9 @@ Rancher 2.X UI driver for the [Hetzner Cloud](https://www.hetzner.de/cloud). For
 
 | Key | Value |
 | --- | ----- |
-| Download URL | `https://github.com/JonasProgrammer/docker-machine-driver-hetzner/releases/download/1.3.0/docker-machine-driver-hetzner_1.3.0_linux_amd64.tar.gz` |
+| Download URL | `https://github.com/JonasProgrammer/docker-machine-driver-hetzner/releases/download/1.4.0/docker-machine-driver-hetzner_1.4.0_linux_amd64.tar.gz` |
 | Custom UI URL | `https://storage.googleapis.com/hcloud-rancher-v2-ui-driver/component.js` |
-| Whitelist Domains |  `storage.googleapis.com` | 
+| Whitelist Domains |  `storage.googleapis.com` |
 
 * Wait for the driver to become "Active"
 * Go to Clusters -> Add Cluster, your driver and custom UI should show up.
