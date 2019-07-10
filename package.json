@@ -12,28 +12,27 @@
     "url": "https://github.com/mxschmitt/ui-driver-hetzner/issues"
   },
   "scripts": {
-    "start": "./node_modules/.bin/gulp server",
-    "clean": "./node_modules/.bin/gulp clean",
-    "build": "./node_modules/.bin/gulp build"
+    "start": "gulp server",
+    "clean": "gulp clean",
+    "build": "gulp build"
   },
   "homepage": "https://github.com/mxschmitt/ui-driver-hetzner#readme",
   "devDependencies": {
-    "@babel/preset-env": "^7.2.3",
-    "babel-plugin-add-module-exports": "^1.0.0",
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
     "babel-preset-env": "^1.7.0",
-    "del": "3.0.0",
-    "gulp": "4.0.0",
+    "gulp": "4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean": "0.4.0",
     "gulp-concat": "2.6.1",
     "gulp-connect": "5.7.0",
     "gulp-jshint": "2.1.0",
     "gulp-replace": "1.0.0",
-    "gulp-sourcemaps": "2.6.4",
-    "jshint": "2.9.7",
-    "replace-string": "^2.0.0",
-    "yargs": "12.0.5",
-    "@babel/core": "^7.1.2"
+    "gulp-sourcemaps": "2.6.5",
+    "jshint": "2.10.2",
+    "replace-string": "^3.0.0",
+    "yargs": "13.2.4"
   }
 }
