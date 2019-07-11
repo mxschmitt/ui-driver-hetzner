@@ -32,7 +32,7 @@
       <span>{{templateOptionsTitle}}</span>
     </div>
     <div class="over-hr r-mt20 r-mb20">
-      <span>Region</span>
+      <span>Settings</span>
     </div>
     <div class="row form-group">
       <div class="col-md-2">
@@ -45,9 +45,6 @@
           {{/each}}
         </select>
       </div>
-    </div>
-    <div class="over-hr r-mt20 r-mb20">
-      <span>Settings</span>
     </div>
     <div class="row form-group">
       <div class="col-md-2">
@@ -71,17 +68,24 @@
         </select>
       </div>
     </div>
-    <div class="over-hr r-mt20 r-mb20">
-      <span>User data</span>
-    </div>
     <div class="row form-group">
       <div class="col-md-2">
         <label class="form-control-static">
-          <a href="https://cloudinit.readthedocs.io/en/latest/topics/examples.html" target="_blank">Cloud-init Configuration (optional)</a>
+          <a href="https://cloudinit.readthedocs.io/en/latest/topics/examples.html" target="_blank">Cloud-init Configuration</a> (optional)
         </label>
       </div>
       <div class="col-md-10">
         <textarea value={{model.hetznerConfig.userData}} onchange={{action (mut model.hetznerConfig.userData) value="target.value" }} rows="3" style="width: 100%; resize: vertical"></textarea>
+      </div>
+      <div class="col-md-2">
+        <label class="form-control-static">Networks (Beta, optional. You have to create these Networks in the <a href="https://console.hetzner.cloud" target="_blank">Hetzner Cloud Console</a>)</label>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control" onchange={{action 'modifyNetworks' }} multiple="true">
+          {{#each networkChoices as |network|}}
+          <option value={{network.id}} selected={{array-includes model.hetznerConfig.networks network.id}}>{{network.name}}</option>
+          {{/each}}
+        </select>
       </div>
     </div>
      {{!-- This following contains the Name, Labels and Engine Options fields --}}

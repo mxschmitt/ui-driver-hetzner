@@ -62,3 +62,9 @@ For other users to see your driver, you need to build it and host the output on 
 * `npm run build`
 * Copy the contents of the `dist` directory onto a webserver.
   * If your Rancher is configured to use HA or SSL, the server must also be available via HTTPS.
+
+## Known Issues
+
+### `Error creating machine: Error running provisioning: ssh command error:`
+
+Try to use `overlay2` and if it does not work `overlay` as `Storage Driver` in the `Engine Options` in the bottom.
