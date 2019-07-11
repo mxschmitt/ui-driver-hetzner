@@ -83,7 +83,7 @@
       <div class="col-md-4">
         <select class="form-control" onchange={{action 'modifyNetworks' }} multiple="true">
           {{#each networkChoices as |network|}}
-          <option value={{network.id}} selected={{array-includes model.hetznerConfig.networks network.id}}>{{network.name}}</option>
+          <option value={{network.id}} selected={{array-includes model.hetznerConfig.networks network.id}}>{{network.name}} ({{network.ip_range}})</option>
           {{/each}}
         </select>
       </div>
