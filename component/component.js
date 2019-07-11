@@ -91,7 +91,10 @@ export default Ember.Component.extend(NodeDriver, {
               id: image.id.toString()
             })),
           sizeChoices: responses[2].server_types,
-          networkChoices: responses[3].networks
+          networkChoices: responses[3].networks.map(network => ({
+            ...network,
+            id: network.id.toString()
+          }))
         });
       }).catch(function (err) {
         err.then(function (msg) {
@@ -104,7 +107,6 @@ export default Ember.Component.extend(NodeDriver, {
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
-      console.log("set", options)
       this.set('model.%%DRIVERNAME%%Config.networks', options);
     },
   },
