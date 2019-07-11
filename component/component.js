@@ -17,8 +17,6 @@ const set = Ember.set;
 const alias = Ember.computed.alias;
 const service = Ember.inject.service;
 
-const defaultRadix = 10;
-const defaultBase = 1024;
 /*!!!!!!!!!!!GLOBAL CONST END!!!!!!!!!!!*/
 
 
@@ -67,15 +65,6 @@ export default Ember.Component.extend(NodeDriver, {
       errors.push('Name is required');
     }
 
-    // Add more specific errors
-
-    // Check something and add an error entry if it fails:
-    if (parseInt(get(this, 'config.memorySize'), defaultRadix) < defaultBase) {
-      errors.push('Memory Size must be at least 1024 MB');
-    }
-    if (get(this, 'model.%%DRIVERNAME%%Config.image')) {
-      this.set('model.%%DRIVERNAME%%Config.image', "")
-    }
     // Set the array of errors for display,
     // and return true if saving should continue.
     if (get(errors, 'length')) {
