@@ -33,6 +33,6 @@
     "gulp-sourcemaps": "2.6.5",
     "jshint": "2.10.2",
     "replace-string": "^3.0.0",
-    "yargs": "13.2.4"
+    "yargs": "13.3.0"
   }
 }
