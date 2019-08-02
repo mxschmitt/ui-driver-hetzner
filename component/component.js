@@ -60,6 +60,11 @@ export default Ember.Component.extend(NodeDriver, {
   validate() {
     // Get generic API validation errors
     this._super();
+
+    if (!this.get('model.%%DRIVERNAME%%Config.networks')) {
+      this.set('model.%%DRIVERNAME%%Config.networks', [])
+    }
+
     var errors = get(this, 'errors') || [];
     if (!get(this, 'model.name')) {
       errors.push('Name is required');
