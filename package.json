@@ -19,7 +19,7 @@
   "homepage": "https://github.com/mxschmitt/ui-driver-hetzner#readme",
   "devDependencies": {
     "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-env": "^7.7.1",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
     "babel-preset-env": "^1.7.0",
