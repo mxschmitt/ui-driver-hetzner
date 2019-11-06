@@ -31,7 +31,7 @@
     "gulp-jshint": "2.1.0",
     "gulp-replace": "1.0.0",
     "gulp-sourcemaps": "2.6.5",
-    "jshint": "2.10.2",
+    "jshint": "2.10.3",
     "replace-string": "^3.0.0",
     "yargs": "14.2.0"
   }
