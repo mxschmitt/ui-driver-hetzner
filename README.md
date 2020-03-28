@@ -77,7 +77,7 @@ Reference: [Hetzner Cloud documentation](https://wiki.hetzner.de/index.php/Cloud
 
 The Rancher traffic between the agents and the Rancher related traffic to the nodes is fully encrypted over HTTPS/TLS.
 
-The custom application specific traffic is *not* encrypted. TODO what can I do to encrypt it?
+The custom application specific traffic is *not* encrypted. You can use e.g. the Weave CNI-Provider for that: https://rancher.com/docs/rancher/v2.x/en/faq/networking/cni-providers/#weave
 
 ## Requirements for Private Networks
 
@@ -86,7 +86,4 @@ The custom application specific traffic is *not* encrypted. TODO what can I do t
 
 ## How to close the open ports on the public interface?
 
-https://github.com/vitobotta/hetzner-cloud-init
-
-TODO more verbose description
-
+You could use it e.g. in combination with that tool: https://github.com/vitobotta/hetzner-cloud-init
