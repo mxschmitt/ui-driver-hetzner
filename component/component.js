@@ -51,7 +51,8 @@ export default Ember.Component.extend(NodeDriver, {
       imageId: "168855", // ubuntu-18.04
       userData: '',
       networks: [],
-      usePrivateNetwork: false
+      usePrivateNetwork: false,
+      forcePublicSSH: false
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);

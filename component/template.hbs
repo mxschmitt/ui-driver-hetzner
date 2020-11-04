@@ -94,6 +94,13 @@
           </label>
         </div>
       </div>
+      <div class="col-md-2">
+        <div class="checkbox">
+          <label class="acc-label">{{input type="checkbox" checked=model.hetznerConfig.forcePublicSSH}}
+            Force use of public IP for SSH connections (allows separating Rancher and clusters into different Hetzner Cloud projects)
+          </label>
+        </div>
+      </div>
     </div>
      {{!-- This following contains the Name, Labels and Engine Options fields --}}
      {{form-name-description model=model nameRequired=true}}
