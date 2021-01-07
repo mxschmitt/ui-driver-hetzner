@@ -94,6 +94,16 @@
           </label>
         </div>
       </div>
+      <div class="col-md-2">
+        <label class="form-control-static">Additional SSH Keys</label>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control" onchange={{action 'modifyKeys' }} multiple="true">
+          {{#each keyChoices as |key|}}
+          <option value={{key.id}} selected={{array-includes model.hetznerConfig.additionalKey key.public_key}}>{{key.name}} ({{key.fingerprint}})</option>
+          {{/each}}
+        </select>
+      </div>
     </div>
      {{!-- This following contains the Name, Labels and Engine Options fields --}}
      {{form-name-description model=model nameRequired=true}}

@@ -46,6 +46,7 @@ export default Ember.Component.extend(NodeDriver, {
     // bootstrap is called by rancher ui on 'init', you're better off doing your setup here rather then the init function to ensure everything is setup correctly
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
+      additionalKey: [],
       serverType: 'cx21', // 4 GB Ram
       serverLocation: 'nbg1', // Nuremberg
       imageId: "168855", // ubuntu-18.04
@@ -71,6 +72,10 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('model.%%DRIVERNAME%%Config.serverLabel', [])
     }
 
+    if (!this.get('model.%%DRIVERNAME%%Config.additionalKey')) {
+      this.set('model.%%DRIVERNAME%%Config.additionalKey', [])
+    }
+
     var errors = get(this, 'errors') || [];
     if (!get(this, 'model.name')) {
       errors.push('Name is required');
@@ -90,7 +95,7 @@ export default Ember.Component.extend(NodeDriver, {
     getData() {
       this.set('gettingData', true);
       let that = this;
-      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks')]).then(function (responses) {
+      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks'), this.apiRequest('/v1/ssh_keys')]).then(function (responses) {
         that.setProperties({
           errors: [],
           needAPIToken: false,
@@ -102,10 +107,16 @@ export default Ember.Component.extend(NodeDriver, {
               id: image.id.toString()
             })),
           sizeChoices: responses[2].server_types,
-          networkChoices: responses[3].networks.map(network => ({
-            ...network,
-            id: network.id.toString()
-          }))
+          networkChoices: responses[3].networks
+            .map(network => ({
+              ...network,
+              id: network.id.toString()
+            })),
+          keyChoices: responses[4].ssh_keys
+            .map(key => ({
+              ...key,
+              id: key.id.toString()
+            }))
         });
       }).catch(function (err) {
         err.then(function (msg) {
@@ -125,6 +136,13 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('model.%%DRIVERNAME%%Config.serverLabel', labels_list);
 
       this._super(labels);
+    },
+    modifyKeys: function (select) {
+      let options = [...select.target.options]
+        .filter(o => o.selected)
+        .map(o => o.value)
+        .map(o => this.keyChoices.filter(keyChoice => keyChoice.id == o)[0]["public_key"]);
+      this.set('model.%%DRIVERNAME%%Config.additionalKey', options);
     },
   },
   apiRequest(path) {
