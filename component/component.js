@@ -51,7 +51,8 @@ export default Ember.Component.extend(NodeDriver, {
       imageId: "168855", // ubuntu-18.04
       userData: '',
       networks: [],
-      usePrivateNetwork: false
+      usePrivateNetwork: false,
+      serverLabel: [''],
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
@@ -114,6 +115,12 @@ export default Ember.Component.extend(NodeDriver, {
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
       this.set('model.%%DRIVERNAME%%Config.networks', options);
+    },
+    setLabels: function(labels){
+      let labels_list = labels.map(l => l.key + "=" + l.value)
+      this.set('model.%%DRIVERNAME%%Config.serverLabel', labels_list);
+
+      this._super(labels)
     },
   },
   apiRequest(path) {
