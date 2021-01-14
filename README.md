@@ -10,7 +10,7 @@ Rancher 2.X UI driver for the [Hetzner Cloud](https://www.hetzner.de/cloud). For
 
 | Key | Value |
 | --- | ----- |
-| Download URL | `https://github.com/JonasProgrammer/docker-machine-driver-hetzner/releases/download/2.1.0/docker-machine-driver-hetzner_2.1.0_linux_amd64.tar.gz` |
+| Download URL | `https://github.com/JonasProgrammer/docker-machine-driver-hetzner/releases/download/3.2.0/docker-machine-driver-hetzner_3.2.0_linux_amd64.tar.gz` |
 | Custom UI URL | `https://storage.googleapis.com/hcloud-rancher-v2-ui-driver/component.js` |
 | Whitelist Domains |  `storage.googleapis.com` |
 
