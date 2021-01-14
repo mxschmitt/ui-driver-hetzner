@@ -67,11 +67,8 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('model.%%DRIVERNAME%%Config.networks', [])
     }
 
-    let labels_list = this.get('model.%%DRIVERNAME%%Config.serverLabel');
-    if (!Array.isArray(labels_list) || !labels_list.length) {
-      delete this.get('model.%%DRIVERNAME%%Config').serverLabel;
-    } else {
-      this.set('model.%%DRIVERNAME%%Config.serverLabel', labels_list);
+    if (!this.get('model.%%DRIVERNAME%%Config.serverLabel')) {
+      this.set('model.%%DRIVERNAME%%Config.serverLabel', [])
     }
 
     var errors = get(this, 'errors') || [];
