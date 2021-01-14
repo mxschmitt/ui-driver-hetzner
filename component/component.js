@@ -119,7 +119,7 @@ export default Ember.Component.extend(NodeDriver, {
     setLabels: function(labels){
       let labels_list = labels.map(l => l.key + "=" + l.value)
       if (!Array.isArray(labels_list) || !labels_list.length) {
-        this.delete('model.%%DRIVERNAME%%Config.serverLabel');
+        delete this.get('model.%%DRIVERNAME%%Config').serverLabel;
       } else {
         this.set('model.%%DRIVERNAME%%Config.serverLabel', labels_list);
       }
