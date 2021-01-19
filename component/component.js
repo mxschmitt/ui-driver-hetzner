@@ -140,8 +140,7 @@ export default Ember.Component.extend(NodeDriver, {
     modifyKeys: function (select) {
       let options = [...select.target.options]
         .filter(o => o.selected)
-        .map(o => o.value)
-        .map(o => this.keyChoices.filter(keyChoice => keyChoice.id == o)[0]["public_key"]);
+        .map(o => this.keyChoices.find(keyChoice => keyChoice.id == o.value)["public_key"]);
       this.set('model.%%DRIVERNAME%%Config.additionalKey', options);
     },
   },
