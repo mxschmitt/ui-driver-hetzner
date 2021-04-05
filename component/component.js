@@ -52,6 +52,7 @@ export default Ember.Component.extend(NodeDriver, {
       imageId: "168855", // ubuntu-18.04
       userData: '',
       networks: [],
+      firewalls: [],
       usePrivateNetwork: false,
       serverLabel: [''],
     });
@@ -66,6 +67,10 @@ export default Ember.Component.extend(NodeDriver, {
 
     if (!this.get('model.%%DRIVERNAME%%Config.networks')) {
       this.set('model.%%DRIVERNAME%%Config.networks', [])
+    }
+
+    if (!this.get('model.%%DRIVERNAME%%Config.firewalls')) {
+      this.set('model.%%DRIVERNAME%%Config.firewalls', [])
     }
 
     if (!this.get('model.%%DRIVERNAME%%Config.serverLabel')) {
@@ -95,7 +100,7 @@ export default Ember.Component.extend(NodeDriver, {
     getData() {
       this.set('gettingData', true);
       let that = this;
-      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks'), this.apiRequest('/v1/ssh_keys')]).then(function (responses) {
+      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks'), this.apiRequest('/v1/ssh_keys'), this.apiRequest('/v1/firewalls')]).then(function (responses) {
         that.setProperties({
           errors: [],
           needAPIToken: false,
@@ -116,6 +121,11 @@ export default Ember.Component.extend(NodeDriver, {
             .map(key => ({
               ...key,
               id: key.id.toString()
+            })),
+          firewallChoices: responses[5].firewalls
+            .map(firewall => ({
+              ...firewall,
+              id: firewall.id.toString()
             }))
         });
       }).catch(function (err) {
@@ -130,6 +140,10 @@ export default Ember.Component.extend(NodeDriver, {
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
       this.set('model.%%DRIVERNAME%%Config.networks', options);
+    },
+    modifyFirewalls: function (select) {
+      let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
+      this.set('model.%%DRIVERNAME%%Config.firewalls', options);
     },
     setLabels: function(labels){
       let labels_list = labels.map(l => l.key + "=" + l.value);

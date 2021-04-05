@@ -94,6 +94,16 @@
           </label>
         </div>
       </div>
+       <div class="col-md-2">
+        <label class="form-control-static">Firewalls (Beta, optional. You have to create these Firewalls in the <a href="https://console.hetzner.cloud" target="_blank" rel="noopener noreferrer">Hetzner Cloud Console</a>)</label>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control" onchange={{action 'modifyFirewalls' }} multiple="true">
+          {{#each firewallChoices as |firewall|}}
+          <option value={{firewall.id}} selected={{array-includes model.hetznerConfig.firewalls firewall.id}}>{{firewall.name}}</option>
+          {{/each}}
+        </select>
+      </div>
       <div class="col-md-2">
         <label class="form-control-static">Additional SSH Keys</label>
       </div>
