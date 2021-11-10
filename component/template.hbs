@@ -114,6 +114,15 @@
           {{/each}}
         </select>
       </div>
+      <div class="col-md-2">
+        <label class="form-control-static">Placement group</label>
+          <select class="form-control" onchange={{action (mut model.hetznerConfig.placementGroup) value="target.value" }}>
+            <option value="" selected="{{not model.hetznerConfig.placementGroup}}"></option>
+            {{#each placementGroupChoices as |placementGroup|}}
+              <option value="{{placementGroup.name}}" selected={{eq model.hetznerConfig.placementGroup placementGroup.name}}>{{placementGroup.name}} ({{placementGroup.type}})</option>
+            {{/each}}
+          </select>
+      </div>
     </div>
      {{!-- This following contains the Name, Labels and Engine Options fields --}}
      {{form-name-description model=model nameRequired=true}}
