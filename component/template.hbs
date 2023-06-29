@@ -53,11 +53,11 @@
       <div class="col-md-4">
         <select class="form-control" onchange={{action (mut model.hetznerConfig.imageId) value="target.value" }}>
           {{#each imageChoices as |choice|}}
-            <option value={{choice.id}} selected={{eq model.hetznerConfig.imageId choice.id}}>{{choice.description}}</option>
+            <option value={{choice.id}} selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}>{{choice.description}}</option>
           {{/each}}
         </select>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2"> 
         <label class="form-control-static">Size</label>
       </div>
       <div class="col-md-4">
@@ -119,7 +119,7 @@
           <select class="form-control" onchange={{action (mut model.hetznerConfig.placementGroup) value="target.value" }}>
             <option value="" selected="{{not model.hetznerConfig.placementGroup}}"></option>
             {{#each placementGroupChoices as |placementGroup|}}
-              <option value="{{placementGroup.name}}" selected={{eq model.hetznerConfig.placementGroup placementGroup.name}}>{{placementGroup.name}} ({{placementGroup.type}})</option>
+              <option value="{{placementGroup.name}}" selected={{or (eq model.hetznerConfig.placementGroup placementGroup.name) (eq model.hetznerConfig.placementGroup placementGroup.id)}}>{{placementGroup.name}} ({{placementGroup.type}})</option>
             {{/each}}
           </select>
       </div>
