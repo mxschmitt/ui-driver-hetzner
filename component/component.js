@@ -148,7 +148,7 @@ export default Ember.Component.extend(NodeDriver, {
     updateServerLocation: async function (select) {
       let options = [...select.target.options].filter(o => o.selected)
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
-      const allImages = (await this.apiRequest('/v1/images' + options[0].value)).images
+      const allImages = (await this.apiRequest('/v1/images')).images
       this.set('model.%%DRIVERNAME%%Config.images', allImages.sort((a, b) => a.cores > b.cores ? -1 : 1))
     },
     modifyNetworks: function (select) {
