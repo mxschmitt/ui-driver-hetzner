@@ -1,6 +1,5 @@
 /*!!!!!!!!!!!Do not change anything between here (the DRIVERNAME placeholder will be automatically replaced at buildtime)!!!!!!!!!!!*/
 import NodeDriver from 'shared/mixins/node-driver'
-import { apiRequest } from './hetzner'
 
 // import uiConstants from 'ui/utils/constants'
 
@@ -16,7 +15,9 @@ const computed = Ember.computed;
 const get = Ember.get;
 const set = Ember.set;
 const alias = Ember.computed.alias;
-const service = Ember.inject.service;
+const service = Ember.inject.service
+// import { apiRequest } from './hetzner'
+
 
 /*!!!!!!!!!!!GLOBAL CONST END!!!!!!!!!!!*/
 
