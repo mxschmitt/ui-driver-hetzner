@@ -90,7 +90,6 @@ export default Ember.Component.extend(NodeDriver, {
   actions: {
     async getData() {
       this.set('gettingData', true);
-      let that = this;
       try {
         const [
           locations,
@@ -150,7 +149,7 @@ export default Ember.Component.extend(NodeDriver, {
       let options = [...select.target.options].filter(o => o.selected)
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
       const allImages = (await this.apiRequest('/v1/images' + options[0].value)).images
-      this.set('model.%%DRIVERNAME%%Config.images', (await this.apiRequest('/v1/images' + options[0].value)).images)
+      this.set('model.%%DRIVERNAME%%Config.images', allImages.sort((a, b) => a.cores > b.cores ? -1 : 1))
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
