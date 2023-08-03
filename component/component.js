@@ -146,6 +146,12 @@ export default Ember.Component.extend(NodeDriver, {
         })
       }
     },
+    updateServerLocation: async function (select) {
+      let options = [...select.target.options].filter(o => o.selected)
+      this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
+      const allImages = (await this.apiRequest('/v1/images' + options[0].value)).images
+      this.set('model.%%DRIVERNAME%%Config.images', (await this.apiRequest('/v1/images' + options[0].value)).images)
+    },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
       this.set('model.%%DRIVERNAME%%Config.networks', options);

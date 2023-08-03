@@ -39,7 +39,7 @@
         <label class="form-control-static">Region</label>
       </div>
       <div class="col-md-10">
-        <select class="form-control" onchange={{action (mut model.hetznerConfig.serverLocation) value="target.value" }}>
+        <select class="form-control" onchange={{action "updateServerLocation" }}>
           {{#each regionChoices as |choice|}}
             <option value={{choice.name}} selected={{eq model.hetznerConfig.serverLocation choice.name}}>{{choice.city}}</option>
           {{/each}}
@@ -57,7 +57,7 @@
           {{/each}}
         </select>
       </div>
-      <div class="col-md-2"> 
+      <div class="col-md-2">
         <label class="form-control-static">Size</label>
       </div>
       <div class="col-md-4">
