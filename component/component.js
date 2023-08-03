@@ -1,5 +1,6 @@
 /*!!!!!!!!!!!Do not change anything between here (the DRIVERNAME placeholder will be automatically replaced at buildtime)!!!!!!!!!!!*/
-import NodeDriver from 'shared/mixins/node-driver';
+import NodeDriver from 'shared/mixins/node-driver'
+import { apiRequest } from './hetzner'
 
 // import uiConstants from 'ui/utils/constants'
 
@@ -86,54 +87,62 @@ export default Ember.Component.extend(NodeDriver, {
     }
   },
   actions: {
-    getData() {
+    async getData() {
       this.set('gettingData', true);
       let that = this;
-      Promise.all([
-        this.apiRequest('/v1/locations'),
-        this.apiRequest('/v1/images'),
-        this.apiRequest('/v1/server_types'),
-        this.apiRequest('/v1/networks'),
-        this.apiRequest('/v1/ssh_keys'),
-        this.apiRequest('/v1/firewalls'),
-        this.apiRequest('/v1/placement_groups')
-      ]).then(function (responses) {
-        that.setProperties({
+      try {
+        const [
+          locations,
+          images,
+          serverTypes,
+          networks,
+          sshKeys,
+          firewalls,
+          placementGroups
+        ] = await Promise.all([
+          this.apiRequest('/v1/locations'),
+          this.apiRequest('/v1/images'),
+          this.apiRequest('/v1/server_types'),
+          this.apiRequest('/v1/networks'),
+          this.apiRequest('/v1/ssh_keys'),
+          this.apiRequest('/v1/firewalls'),
+          this.apiRequest('/v1/placement_groups')
+        ])
+
+        this.setProperties({
           errors: [],
           needAPIToken: false,
           gettingData: false,
-          regionChoices: responses[0].locations,
-          imageChoices: responses[1].images
+          regionChoices: locations.locations,
+          imageChoices: images.images
             .map(image => ({
               ...image,
               id: image.id.toString()
             })),
-          sizeChoices: responses[2].server_types,
-          networkChoices: responses[3].networks
+          sizeChoices: serverTypes.server_types,
+          networkChoices: networks.networks
             .map(network => ({
               ...network,
               id: network.id.toString()
             })),
-          keyChoices: responses[4].ssh_keys
+          keyChoices: sshKeys.ssh_keys
             .map(key => ({
               ...key,
               id: key.id.toString()
             })),
-          firewallChoices: responses[5].firewalls
+          firewallChoices: firewalls.firewalls
             .map(firewall => ({
               ...firewall,
               id: firewall.id.toString()
             })),
-          placementGroupChoices: responses[6].placement_groups
-        });
-      }).catch(function (err) {
-        err.then(function (msg) {
-          that.setProperties({
-            errors: ['Error received from Hetzner Cloud: ' + msg.error.message],
-            gettingData: false
-          })
+          placementGroupChoices: placementGroups.placement_groups
         })
-      })
+      } catch(err) {
+        this.setProperties({
+          errors: ['Error received from Hetzner Cloud: ' + err.message],
+          gettingData: false
+        })
+      }
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
