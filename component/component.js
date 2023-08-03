@@ -169,7 +169,7 @@ export default Ember.Component.extend(NodeDriver, {
   },
   apiRequest(path, filters = {}) {
     const filterString = "?" + Object.keys(filters).map(key => `${key}=${filters[key]}`).join("&");
-    console.log('Requesting: ', 'https://api.hetzner.cloud' + path + filterString === '?' ? '' : filterString)
+    console.log('Requesting: ', 'https://api.hetzner.cloud' + path + (filterString === '?' ? '' : filterString))
     return fetch('https://api.hetzner.cloud' + path + filterString === '?' ? '' : filterString, {
       headers: {
         'Authorization': 'Bearer ' + this.get('model.%%DRIVERNAME%%Config.apiToken'),
