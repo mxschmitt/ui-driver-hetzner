@@ -42,7 +42,7 @@ export default Ember.Component.extend(NodeDriver, {
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
   // Write your component here, starting with setting 'model' to a machine with your config populated
-  bootstrap: function () {
+  bootstrap () {
     // bootstrap is called by rancher ui on 'init', you're better off doing your setup here rather then the init function to ensure everything is setup correctly
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
@@ -67,26 +67,13 @@ export default Ember.Component.extend(NodeDriver, {
     // Get generic API validation errors
     this._super();
 
-    if (!this.get('model.%%DRIVERNAME%%Config.networks')) {
-      this.set('model.%%DRIVERNAME%%Config.networks', [])
-    }
-
-    if (!this.get('model.%%DRIVERNAME%%Config.firewalls')) {
-      this.set('model.%%DRIVERNAME%%Config.firewalls', [])
-    }
-
-    if (!this.get('model.%%DRIVERNAME%%Config.serverLabel')) {
-      this.set('model.%%DRIVERNAME%%Config.serverLabel', [])
-    }
-
-    if (!this.get('model.%%DRIVERNAME%%Config.additionalKey')) {
-      this.set('model.%%DRIVERNAME%%Config.additionalKey', [])
-    }
+    if (!this.get('model.%%DRIVERNAME%%Config.networks')) this.set('model.%%DRIVERNAME%%Config.networks', [])
+    if (!this.get('model.%%DRIVERNAME%%Config.firewalls')) this.set('model.%%DRIVERNAME%%Config.firewalls', [])
+    if (!this.get('model.%%DRIVERNAME%%Config.serverLabel')) this.set('model.%%DRIVERNAME%%Config.serverLabel', [])
+    if (!this.get('model.%%DRIVERNAME%%Config.additionalKey')) this.set('model.%%DRIVERNAME%%Config.additionalKey', [])
 
     var errors = get(this, 'errors') || [];
-    if (!get(this, 'model.name')) {
-      errors.push('Name is required');
-    }
+    if (!get(this, 'model.name')) errors.push('Name is required')
 
     // Set the array of errors for display,
     // and return true if saving should continue.
@@ -102,7 +89,15 @@ export default Ember.Component.extend(NodeDriver, {
     getData() {
       this.set('gettingData', true);
       let that = this;
-      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks'), this.apiRequest('/v1/ssh_keys'), this.apiRequest('/v1/firewalls'), this.apiRequest('/v1/placement_groups')]).then(function (responses) {
+      Promise.all([
+        this.apiRequest('/v1/locations'),
+        this.apiRequest('/v1/images'),
+        this.apiRequest('/v1/server_types'),
+        this.apiRequest('/v1/networks'),
+        this.apiRequest('/v1/ssh_keys'),
+        this.apiRequest('/v1/firewalls'),
+        this.apiRequest('/v1/placement_groups')
+      ]).then(function (responses) {
         that.setProperties({
           errors: [],
           needAPIToken: false,
@@ -161,8 +156,9 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('model.%%DRIVERNAME%%Config.additionalKey', options);
     },
   },
-  apiRequest(path) {
-    return fetch('https://api.hetzner.cloud' + path, {
+  apiRequest(path, filters = {}) {
+    const filterString = "?" + Object.keys(filters).map(key => `${key}=${filters[key]}`).join("&");
+    return fetch('https://api.hetzner.cloud' + path + filterString === '?' ? '' : filterString, {
       headers: {
         'Authorization': 'Bearer ' + this.get('model.%%DRIVERNAME%%Config.apiToken'),
       },
