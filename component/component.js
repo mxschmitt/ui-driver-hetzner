@@ -16,7 +16,7 @@ const get = Ember.get;
 const set = Ember.set;
 const alias = Ember.computed.alias;
 const service = Ember.inject.service
-import { apiRequest, getNetworksByZone } from './hetzner'
+import { apiRequest, getNetworksByZone, getBaseData, getArchitectureImagesSorted } from './hetzner'
 /*!!!!!!!!!!!GLOBAL CONST END!!!!!!!!!!!*/
 
 
@@ -95,59 +95,50 @@ export default Ember.Component.extend(NodeDriver, {
   actions: {
     async getData() {
       this.set('gettingData', true);
-      const apiKey = this.get('model.%%DRIVERNAME%%Config.apiToken')
       try {
-        const baseHetznerData = Promise.all([
-          apiRequest(apiKey, '/v1/locations'),
-          apiRequest(apiKey, '/v1/server_types'),
-          apiRequest(apiKey, '/v1/ssh_keys'),
-          apiRequest(apiKey, '/v1/firewalls'),
-          apiRequest(apiKey, '/v1/placement_groups')
-        ])
+        const apiKey =  this.get('model.%%DRIVERNAME%%Config.apiToken')
+
         const selectedServerLocation = this.get('model.%%DRIVERNAME%%Config.serverLocation')
         const selectedServerType = this.get('model.%%DRIVERNAME%%Config.serverType')
         let imageChoices = []
         let networkChoices = []
-        const [
-          locations,
-          serverTypes,
-          sshKeys,
+        const {
           firewalls,
-          placementGroups
-        ] = await baseHetznerData
+          locations,
+          placementGroups,
+          serverTypes,
+          sshKeys
+        } = await getBaseData(apiKey)
 
         if (selectedServerLocation) {
-          const serverLocation = locations.locations.filter(i => i.name === selectedServerLocation)[0]
-          const regionNetworks = (await getNetworksByZone(apiKey, serverLocation.network_zone))
-            .map(i => ({ ...i, id: i.id.toString() }))
-          networkChoices = regionNetworks
+          const serverLocation = locations.filter(i => i.name === selectedServerLocation)[0]
+          networkChoices = this.reloadNetworks(apiKey, serverLocation.network_zone)
         }
 
         if (selectedServerType) {
-          const serverType = serverTypes.server_types.filter(i => i.name === selectedServerType)[0]
-          imageChoices = (await apiRequest(apiKey, '/v1/images', { type: ['system', 'snapshot', 'backup'], architecture: serverType.architecture })).images
-            .sort((a, b) => a.name > b.name ? 1 : -1)
+          const serverType = serverTypes.filter(i => i.name === selectedServerType)[0]
+          imageChoices = await this.reloadImages(apiKey, serverType.architecture)
         }
 
         this.setProperties({
           errors: [],
           needAPIToken: false,
           gettingData: false,
-          regionChoices: locations.locations,
+          regionChoices: locations,
           imageChoices,
-          serverTypeChoices: serverTypes.server_types,
+          serverTypeChoices: serverTypes,
           networkChoices,
-          keyChoices: sshKeys.ssh_keys
+          keyChoices: sshKeys
             .map(key => ({
               ...key,
               id: key.id.toString()
             })),
-          firewallChoices: firewalls.firewalls
+          firewallChoices: firewalls
             .map(firewall => ({
               ...firewall,
               id: firewall.id.toString()
             })),
-          placementGroupChoices: placementGroups.placement_groups
+          placementGroupChoices: placementGroups
         })
       } catch(err) {
         console.log(err)
@@ -165,18 +156,16 @@ export default Ember.Component.extend(NodeDriver, {
       const regionDetails = regionChoices.filter(i => i.name == options[0].value)[0]
 
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
-      const regionNetworks = (await getNetworksByZone(apiKey, regionDetails.network_zone))
-        .map(i => ({ ...i, id: i.id.toString() }))
-      this.set('networkChoices', regionNetworks)
+      this.reloadNetworks(apiKey, regionDetails.network_zone)
     },
     async updateServerType(select) {
       const apiKey = this.get('model.%%DRIVERNAME%%Config.apiToken')
       let options = [...select.target.options].filter(o => o.selected)
+      this.set('model.%%DRIVERNAME%%Config.serverType', options[0].value)
+
       const serverTypeChoices = this.get('serverTypeChoices')
       const choice = serverTypeChoices.filter(i => i.name == options[0].value)[0]
-      const allImages = (await apiRequest(apiKey, '/v1/images', { type: ['system', 'snapshot', 'backup'], architecture: choice.architecture })).images
-      this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? 1 : -1))
-      this.set('model.%%DRIVERNAME%%Config.serverType', options[0].value)
+      await this.reloadImages(apiKey, choice.architecture)
     },
     updateImage(select) {
       let options = [...select.target.options].filter(o => o.selected)
@@ -207,7 +196,29 @@ export default Ember.Component.extend(NodeDriver, {
     },
     changeToken: function(){
       this.set('needAPIToken', true)
-    },
-  }
-  // Any computed properties or custom logic can go here
+    }
+  },
+  async reloadImages(apiKey, architecture) {
+    this.set('gettingData', true)
+    const allImages = await getArchitectureImagesSorted(apiKey, architecture)
+    this.set('imageChoices', allImages)
+    if (allImages.filter(i => i.id.toString() === this.get('model.%%DRIVERNAME%%Config.imageId')).length === 0) {
+      this.set('model.%%DRIVERNAME%%Config.imageId', '')
+      this.set('model.%%DRIVERNAME%%Config.image', '')
+    }
+    this.set('gettingData', false)
+    return allImages
+  },
+  async reloadNetworks(apiKey, zone) {
+    this.set('gettingData', true)
+    const allNetworks = (await getNetworksByZone(apiKey, zone))
+      .map(i => ({ ...i, id: i.id.toString() }))
+    this.set('networkChoices', allNetworks)
+    const networks = this.get('model.%%DRIVERNAME%%Config.networks')
+    if (allNetworks.filter(i => networks.includes(i.id.toString())).length === 0) {
+      this.set('model.%%DRIVERNAME%%Config.networks', [])
+    }
+    this.set('gettingData', false)
+    return allNetworks
+  },
 });
