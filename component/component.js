@@ -35,6 +35,15 @@ export default Ember.Component.extend(NodeDriver, {
     });
     set(this, 'layout', template);
 
+    const apiToken = this.get('model.%%DRIVERNAME%%Config.apiToken')
+    if (apiToken) {
+      apiRequest(apiToken, '/v1/locations')
+        .then(() => this.set('needAPIToken', false))
+        .catch(() => this.set('needAPIToken', true))
+        this.actions.getData()
+    } else {
+      this.set('needAPIToken', true)
+    }
     this._super(...arguments);
 
   },
@@ -59,15 +68,6 @@ export default Ember.Component.extend(NodeDriver, {
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
-    const apiToken = this.get('model.%%DRIVERNAME%%Config.apiToken')
-    if (apiToken) {
-      apiRequest(apiToken, '/v1/locations')
-        .then(() => this.set('needAPIToken', false))
-        .catch(() => this.set('needAPIToken', true))
-        this.actions.getData()
-    } else {
-      this.set('needAPIToken', true)
-    }
   },
   // Add custom validation beyond what can be done from the config API schema
   validate() {
