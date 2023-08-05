@@ -24,7 +24,6 @@ import { apiRequest, getNetworksByZone } from './hetzner'
 /*!!!!!!!!!!!DO NOT CHANGE START!!!!!!!!!!!*/
 export default Ember.Component.extend(NodeDriver, {
   driverName: '%%DRIVERNAME%%',
-  needAPIToken: true,
   config: alias('model.%%DRIVERNAME%%Config'),
   app: service(),
 
@@ -47,10 +46,10 @@ export default Ember.Component.extend(NodeDriver, {
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
       additionalKey: [],
-      serverType: '', // 4 GB Ram
-      serverLocation: '', // Nuremberg
+      serverType: '',
+      serverLocation: '',
       image: '',
-      imageId: "", // ubuntu-18.04
+      imageId: "",
       userData: '',
       networks: [],
       firewalls: [],
@@ -60,8 +59,15 @@ export default Ember.Component.extend(NodeDriver, {
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
+    const apiToken = this.get('model.%%DRIVERNAME%%Config.apiToken')
+    if (apiToken) {
+      apiRequest(apiToken, '/v1/locations')
+        .then(() => this.set('needAPIToken', false))
+        .catch(() => this.set('needAPIToken', true))
+    } else {
+      this.set('needAPIToken', true)
+    }
   },
-
   // Add custom validation beyond what can be done from the config API schema
   validate() {
     // Get generic API validation errors
