@@ -49,6 +49,38 @@ gulp.task('assets', gulp.series('styles', function () {
     .pipe(gulp.dest(DIST));
 }));
 
+gulp.task('hetznerbabel', function () {
+  const babelOpts = {
+    presets: [
+      [
+        "@babel/preset-env", {
+          targets: {
+            browsers: ["> 1%"]
+          }
+        }]
+    ],
+    plugins: [
+      "add-module-exports",
+      [
+        "transform-es2015-modules-amd", {
+          "noInterop": true,
+        }
+      ]
+    ],
+    comments: false,
+    moduleId: `nodes/components/driver-${DRIVER_NAME}/hetzner`
+  }
+
+
+  return gulp.src([
+    `${BASE}hetzner.js`,
+  ])
+    .pipe(replace(NAME_TOKEN, DRIVER_NAME))
+    .pipe(babel(babelOpts))
+    .pipe(gulpConcat(`hetzner.js`, { newLine: ';\n' }))
+    .pipe(gulp.dest(TMP));
+});
+
 gulp.task('babel', gulp.series('assets', function () {
   const babelOpts = {
     presets: [
@@ -78,7 +110,7 @@ gulp.task('babel', gulp.series('assets', function () {
   hbs = Buffer.from(hbs).toString('base64');
 
   return gulp.src([
-    `${BASE}component.js`
+    `${BASE}component.js`,
   ])
     .pipe(replace('const LAYOUT;', `const LAYOUT = "${hbs}";`))
     .pipe(replace(NAME_TOKEN, DRIVER_NAME))
@@ -117,7 +149,37 @@ gulp.task('rexport', gulp.series('babel', function () {
     .pipe(gulp.dest(TMP));
 }));
 
-gulp.task('compile', gulp.series('rexport', function () {
+gulp.task('hetznerexport', gulp.series('hetznerbabel', function () {
+  const babelOpts = {
+    presets: [
+      [
+        "@babel/preset-env", {
+          targets: {
+            browsers: ["> 1%"]
+          }
+        }]
+    ],
+    plugins: [
+      "add-module-exports",
+      [
+        "transform-es2015-modules-amd", {
+          "noInterop": true,
+        }
+      ]
+    ],
+    comments: false,
+    moduleId: `ui/components/driver-${DRIVER_NAME}/hetzner`
+  }
+  return gulp.src([
+    `${BASE}hetznerexport.js`
+  ])
+    .pipe(replace(NAME_TOKEN, DRIVER_NAME))
+    .pipe(babel(babelOpts))
+    .pipe(gulpConcat(`hetznerexport.js`, { newLine: ';\n' }))
+    .pipe(gulp.dest(TMP));
+}));
+
+gulp.task('compile', gulp.series(['rexport', 'hetznerexport'], function () {
   return gulp.src([
     `${TMP}**.js`
   ])
