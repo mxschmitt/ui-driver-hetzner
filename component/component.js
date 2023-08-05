@@ -35,17 +35,17 @@ export default Ember.Component.extend(NodeDriver, {
     });
     set(this, 'layout', template);
 
+    this._super(...arguments);
+
     const apiToken = this.get('model.%%DRIVERNAME%%Config.apiToken')
     if (apiToken) {
       apiRequest(apiToken, '/v1/locations')
-        .then(() => this.set('needAPIToken', false))
-        .catch(() => this.set('needAPIToken', true))
-        this.actions.getData()
+        .then(() => set(this, 'needAPIToken', false))
+        .catch(() => set(this, 'needAPIToken', true))
+      this.actions.getData.bind(this)()
     } else {
       this.set('needAPIToken', true)
     }
-    this._super(...arguments);
-
   },
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
@@ -97,28 +97,46 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('gettingData', true);
       const apiKey = this.get('model.%%DRIVERNAME%%Config.apiToken')
       try {
-        const [
-          locations,
-          serverTypes,
-          sshKeys,
-          firewalls,
-          placementGroups
-        ] = await Promise.all([
+        const baseHetznerData = Promise.all([
           apiRequest(apiKey, '/v1/locations'),
           apiRequest(apiKey, '/v1/server_types'),
           apiRequest(apiKey, '/v1/ssh_keys'),
           apiRequest(apiKey, '/v1/firewalls'),
           apiRequest(apiKey, '/v1/placement_groups')
         ])
+        const selectedServerLocation = this.get('model.%%DRIVERNAME%%Config.serverLocation')
+        const selectedServerType = this.get('model.%%DRIVERNAME%%Config.serverType')
+        let imageChoices = []
+        let networkChoices = []
+        const [
+          locations,
+          serverTypes,
+          sshKeys,
+          firewalls,
+          placementGroups
+        ] = await baseHetznerData
+
+        if (selectedServerLocation) {
+          const serverLocation = locations.locations.filter(i => i.name === selectedServerLocation)[0]
+          const regionNetworks = (await getNetworksByZone(apiKey, serverLocation.network_zone))
+            .map(i => ({ ...i, id: i.id.toString() }))
+          networkChoices = regionNetworks
+        }
+
+        if (selectedServerType) {
+          const serverType = serverTypes.server_types.filter(i => i.name === selectedServerType)[0]
+          imageChoices = (await apiRequest(apiKey, '/v1/images', { type: ['system', 'snapshot', 'backup'], architecture: serverType.architecture })).images
+            .sort((a, b) => a.name > b.name ? 1 : -1)
+        }
 
         this.setProperties({
           errors: [],
           needAPIToken: false,
           gettingData: false,
           regionChoices: locations.locations,
-          imageChoices: [],
+          imageChoices,
           serverTypeChoices: serverTypes.server_types,
-          networkChoices: [],
+          networkChoices,
           keyChoices: sshKeys.ssh_keys
             .map(key => ({
               ...key,
@@ -147,7 +165,6 @@ export default Ember.Component.extend(NodeDriver, {
       const regionDetails = regionChoices.filter(i => i.name == options[0].value)[0]
 
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
-      const allNetworks = (await apiRequest(apiKey, '/v1/networks')).networks
       const regionNetworks = (await getNetworksByZone(apiKey, regionDetails.network_zone))
         .map(i => ({ ...i, id: i.id.toString() }))
       this.set('networkChoices', regionNetworks)
@@ -161,12 +178,12 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? 1 : -1))
       this.set('model.%%DRIVERNAME%%Config.serverType', options[0].value)
     },
-    aupdateImage(select) {
+    updateImage(select) {
       let options = [...select.target.options].filter(o => o.selected)
       const imageChoices = this.get('imageChoices')
       const imageChoice = imageChoices.filter(i => i.id.toString() === options[0].value)[0]
-      this.set('model.%%DRIVERNAME%%Config.image', imageChoice.id)
-      this.set('model.%%DRIVERNAME%%Config.imageName', imageChoice.name)
+      this.set('model.%%DRIVERNAME%%Config.imageId', imageChoice.id)
+      this.set('model.%%DRIVERNAME%%Config.image', imageChoice.name)
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
@@ -187,6 +204,9 @@ export default Ember.Component.extend(NodeDriver, {
         .filter(o => o.selected)
         .map(o => this.keyChoices.find(keyChoice => keyChoice.id == o.value)["public_key"]);
       this.set('model.%%DRIVERNAME%%Config.additionalKey', options);
+    },
+    changeToken: function(){
+      this.set('needAPIToken', true)
     },
   }
   // Any computed properties or custom logic can go here

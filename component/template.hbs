@@ -36,6 +36,18 @@
     </div>
     <div class="row form-group">
       <div class="col-md-2">
+      {{#if gettingData}}
+        <p><i class="icon icon-spinner icon-spin"></i> {{t 'generic.loading'}} Loading Details</p>
+      {{else}}
+        <p>&nbsp;</p>
+      {{/if}}
+
+      <button {{action "changeToken"}} class="btn bg-primary" >Change API Key</button>
+
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-md-2">
         <label class="form-control-static">Region</label>
       </div>
       <div class="col-md-10">
