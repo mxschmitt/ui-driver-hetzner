@@ -16,7 +16,7 @@ const get = Ember.get;
 const set = Ember.set;
 const alias = Ember.computed.alias;
 const service = Ember.inject.service
-import { apiRequest } from './hetzner'
+import { apiRequest, getNetworksByZone } from './hetzner'
 /*!!!!!!!!!!!GLOBAL CONST END!!!!!!!!!!!*/
 
 
@@ -110,7 +110,7 @@ export default Ember.Component.extend(NodeDriver, {
           gettingData: false,
           regionChoices: locations.locations,
           imageChoices: [],
-          sizeChoices: serverTypes.server_types,
+          serverTypeChoices: serverTypes.server_types,
           networkChoices: [],
           keyChoices: sshKeys.ssh_keys
             .map(key => ({
@@ -140,17 +140,18 @@ export default Ember.Component.extend(NodeDriver, {
       const regionDetails = regionChoices.filter(i => i.name == options[0].value)[0]
 
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
-      const allImages = (await apiRequest(apiKey, '/v1/images', { type: 'system' })).images
       const allNetworks = (await apiRequest(apiKey, '/v1/networks')).networks
-      const regionNetworks = allNetworks
-        .filter(i => i.subnets
-        .reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false))
-        .map(i => ({
-          ...i,
-          id: i.id.toString()
-        }))
+      const regionNetworks = getNetworksByZone(apiKey, regionDetails.network_zone)
+        .map(i => ({ ...i, id: i.id.toString() }))
       this.set('networkChoices', regionNetworks)
+    },
+    async updateServerType(select) {
+      let options = [...select.target.options].filter(o => o.selected)
+      const serverTypeChoices = this.get('serverTypeChoices')
+      const choice = serverTypeChoices.filter(i => i.name == options[0].value)[0]
+      const allImages = (await apiRequest(apiKey, '/v1/images', { type: ['system', 'snapshot', 'backup'], architecture: choice.architecture })).images
       this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? 1 : -1))
+      this.set('model.%%DRIVERNAME%%Config.serverType', options[0].value)
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)

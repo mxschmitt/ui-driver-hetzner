@@ -39,7 +39,7 @@
         <label class="form-control-static">Region</label>
       </div>
       <div class="col-md-10">
-        <select class="form-control" onchange={{action "updateServerLocation" }}>
+        <select class="form-control" onchange={{ action "updateServerLocation" }}>
           {{#each regionChoices as |choice|}}
             <option value={{choice.name}} selected={{eq model.hetznerConfig.serverLocation choice.name}}>{{choice.city}}</option>
           {{/each}}
@@ -47,6 +47,16 @@
       </div>
     </div>
     <div class="row form-group">
+      <div class="col-md-2">
+        <label class="form-control-static">Server Type</label>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control" onchange={{ action "updateServerType" }}>
+          {{#each serverTypeChoices as |choice|}}
+            <option value={{choice.name}} selected={{eq model.hetznerConfig.serverType choice.name}}>{{choice.description}} - {{ choice.architecture }} - {{choice.memory}}GB Memory - {{choice.disk}}GB Disk space</option>
+          {{/each}}
+        </select>
+      </div>
       <div class="col-md-2">
         <label class="form-control-static">Image</label>
       </div>
@@ -57,16 +67,7 @@
           {{/each}}
         </select>
       </div>
-      <div class="col-md-2">
-        <label class="form-control-static">Size</label>
-      </div>
-      <div class="col-md-4">
-        <select class="form-control" onchange={{action (mut model.hetznerConfig.serverType) value="target.value" }}>
-          {{#each sizeChoices as |choice|}}
-            <option value={{choice.name}} selected={{eq model.hetznerConfig.serverType choice.name}}>{{choice.description}} - {{choice.memory}}GB Memory - {{choice.disk}}GB Disk space</option>
-          {{/each}}
-        </select>
-      </div>
+
     </div>
     <div class="row form-group">
       <div class="col-md-2">

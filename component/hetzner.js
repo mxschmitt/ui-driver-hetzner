@@ -19,3 +19,11 @@ export async function apiRequest(key, path, filters = {}) {
     },
   }).then(res => res.ok ? res.json() : Promise.reject(res.json()));
 }
+
+export async function getNetworksByZone(key, zone) {
+  const allNetworks = await apiRequest(key, '/v1/networks')
+  return allNetworks
+    .filter(i => i.subnets
+    .reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false))
+}
+

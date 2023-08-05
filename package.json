@@ -4,19 +4,20 @@
   "description": "Rancher UI driver for the Hetzner Cloud docker-machine driver",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mxschmitt/ui-driver-hetzner.git"
+    "url": "git+https://github.com/PeteFromGlasgow/ui-driver-hetzner.git"
   },
   "author": "Max Schmitt",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/mxschmitt/ui-driver-hetzner/issues"
+    "url": "https://github.com/PeteFromGlasgow/ui-driver-hetzner/issues"
   },
   "scripts": {
     "start": "gulp server",
     "clean": "gulp clean",
-    "build": "gulp build"
+    "build": "gulp build",
+    "publish": "gulp publish"
   },
-  "homepage": "https://github.com/mxschmitt/ui-driver-hetzner#readme",
+  "homepage": "https://github.com/PeteFromGlasgow/ui-driver-hetzner#readme",
   "devDependencies": {
     "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.6",
