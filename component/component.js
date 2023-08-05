@@ -140,10 +140,14 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
       const allImages = (await this.apiRequest('/v1/images', { type: 'system' })).images
       const allNetworks = (await this.apiRequest('/v1/networks')).networks
-      const regionNetworks = allNetworks.filter(i => i.subnets.reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false)).map(i => ({
-        ...i,
-        id: i.id.toString()
-      }))
+      const regionNetworks = allNetworks
+        .filter(i => i.subnets
+        .reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false))
+        .map(i => ({
+          ...i,
+          id: i.id.toString()
+        }))
+      this.set('networkChoices', regionNetworks)
       this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? 1 : -1))
     },
     modifyNetworks: function (select) {
