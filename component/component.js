@@ -64,6 +64,7 @@ export default Ember.Component.extend(NodeDriver, {
       apiRequest(apiToken, '/v1/locations')
         .then(() => this.set('needAPIToken', false))
         .catch(() => this.set('needAPIToken', true))
+        this.actions.getData()
     } else {
       this.set('needAPIToken', true)
     }
