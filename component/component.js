@@ -146,6 +146,7 @@ export default Ember.Component.extend(NodeDriver, {
       this.set('networkChoices', regionNetworks)
     },
     async updateServerType(select) {
+      const apiKey = this.get('model.%%DRIVERNAME%%Config.apiToken')
       let options = [...select.target.options].filter(o => o.selected)
       const serverTypeChoices = this.get('serverTypeChoices')
       const choice = serverTypeChoices.filter(i => i.name == options[0].value)[0]
