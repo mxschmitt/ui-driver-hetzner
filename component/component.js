@@ -10,14 +10,13 @@ const LAYOUT;
 
 
 /*!!!!!!!!!!!GLOBAL CONST START!!!!!!!!!!!*/
-// EMBER API Access - if you need access to any of the Ember API's add them here in the same manner rather then import them via modules, since the dependencies exist in rancher we dont want to expor the modules in the amd def
+// EMBER API Access - if you need access to any of the Ember API's add them here in the same manner rather then import them via modules, since the dependencies exist in rancher we don't want to export the modules in the amd def
 const computed = Ember.computed;
 const get = Ember.get;
 const set = Ember.set;
 const alias = Ember.computed.alias;
 const service = Ember.inject.service
-// import { apiRequest } from './hetzner'
-
+import { apiRequest } from './hetzner'
 /*!!!!!!!!!!!GLOBAL CONST END!!!!!!!!!!!*/
 
 
@@ -89,6 +88,7 @@ export default Ember.Component.extend(NodeDriver, {
   actions: {
     async getData() {
       this.set('gettingData', true);
+      const apiKey = this.get('model.%%DRIVERNAME%%Config.apiToken')
       try {
         const [
           locations,
@@ -97,11 +97,11 @@ export default Ember.Component.extend(NodeDriver, {
           firewalls,
           placementGroups
         ] = await Promise.all([
-          this.apiRequest('/v1/locations'),
-          this.apiRequest('/v1/server_types'),
-          this.apiRequest('/v1/ssh_keys'),
-          this.apiRequest('/v1/firewalls'),
-          this.apiRequest('/v1/placement_groups')
+          apiRequest(apiKey, '/v1/locations'),
+          apiRequest(apiKey, '/v1/server_types'),
+          apiRequest(apiKey, '/v1/ssh_keys'),
+          apiRequest(apiKey, '/v1/firewalls'),
+          apiRequest(apiKey, '/v1/placement_groups')
         ])
 
         this.setProperties({
@@ -133,13 +133,15 @@ export default Ember.Component.extend(NodeDriver, {
       }
     },
     async updateServerLocation(select) {
+      const apiKey = this.get('model.%%DRIVERNAME%%Config.apiToken')
+
       let options = [...select.target.options].filter(o => o.selected)
       const regionChoices = this.get('regionChoices')
       const regionDetails = regionChoices.filter(i => i.name == options[0].value)[0]
 
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
-      const allImages = (await this.apiRequest('/v1/images', { type: 'system' })).images
-      const allNetworks = (await this.apiRequest('/v1/networks')).networks
+      const allImages = (await apiRequest(apiKey, '/v1/images', { type: 'system' })).images
+      const allNetworks = (await apiRequest(apiKey, '/v1/networks')).networks
       const regionNetworks = allNetworks
         .filter(i => i.subnets
         .reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false))
@@ -170,15 +172,6 @@ export default Ember.Component.extend(NodeDriver, {
         .map(o => this.keyChoices.find(keyChoice => keyChoice.id == o.value)["public_key"]);
       this.set('model.%%DRIVERNAME%%Config.additionalKey', options);
     },
-  },
-  apiRequest(path, filters = {}) {
-    const filterString = "?" + Object.keys(filters).map(key => `${key}=${filters[key]}`).join("&");
-    console.log('Requesting: ', 'https://api.hetzner.cloud' + path + (filterString === '?' ? '' : filterString))
-    return fetch('https://api.hetzner.cloud' + path + (filterString === '?' ? '' : filterString), {
-      headers: {
-        'Authorization': 'Bearer ' + this.get('model.%%DRIVERNAME%%Config.apiToken'),
-      },
-    }).then(res => res.ok ? res.json() : Promise.reject(res.json()));
   }
   // Any computed properties or custom logic can go here
 });
