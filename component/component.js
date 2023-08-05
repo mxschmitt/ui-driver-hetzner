@@ -18,7 +18,6 @@ const alias = Ember.computed.alias;
 const service = Ember.inject.service
 // import { apiRequest } from './hetzner'
 
-
 /*!!!!!!!!!!!GLOBAL CONST END!!!!!!!!!!!*/
 
 
@@ -93,17 +92,13 @@ export default Ember.Component.extend(NodeDriver, {
       try {
         const [
           locations,
-          images,
           serverTypes,
-          networks,
           sshKeys,
           firewalls,
           placementGroups
         ] = await Promise.all([
           this.apiRequest('/v1/locations'),
-          this.apiRequest('/v1/images'),
           this.apiRequest('/v1/server_types'),
-          this.apiRequest('/v1/networks'),
           this.apiRequest('/v1/ssh_keys'),
           this.apiRequest('/v1/firewalls'),
           this.apiRequest('/v1/placement_groups')
@@ -114,17 +109,9 @@ export default Ember.Component.extend(NodeDriver, {
           needAPIToken: false,
           gettingData: false,
           regionChoices: locations.locations,
-          imageChoices: images.images
-            .map(image => ({
-              ...image,
-              id: image.id.toString()
-            })),
+          imageChoices: [],
           sizeChoices: serverTypes.server_types,
-          networkChoices: networks.networks
-            .map(network => ({
-              ...network,
-              id: network.id.toString()
-            })),
+          networkChoices: [],
           keyChoices: sshKeys.ssh_keys
             .map(key => ({
               ...key,
@@ -147,9 +134,17 @@ export default Ember.Component.extend(NodeDriver, {
     },
     async updateServerLocation(select) {
       let options = [...select.target.options].filter(o => o.selected)
+      const regionChoices = this.get('regionChoices')
+      const regionDetails = regionChoices.filter(i => i.name == options[0].value)[0]
+
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
-      const allImages = (await this.apiRequest('/v1/images')).images
-      this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? -1 : 1))
+      const allImages = (await this.apiRequest('/v1/images', { type: 'system' })).images
+      const allNetworks = (await this.apiRequest('/v1/networks')).networks
+      const regionNetworks = allNetworks.filter(i => i.subnets.reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false)).map(i => ({
+        ...i,
+        id: i.id.toString()
+      }))
+      this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? 1 : -1))
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
