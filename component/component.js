@@ -47,10 +47,10 @@ export default Ember.Component.extend(NodeDriver, {
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
       additionalKey: [],
-      serverType: 'cx21', // 4 GB Ram
-      serverLocation: 'nbg1', // Nuremberg
+      serverType: '', // 4 GB Ram
+      serverLocation: '', // Nuremberg
       image: '',
-      imageId: "168855", // ubuntu-18.04
+      imageId: "", // ubuntu-18.04
       userData: '',
       networks: [],
       firewalls: [],

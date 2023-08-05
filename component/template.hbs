@@ -40,6 +40,7 @@
       </div>
       <div class="col-md-10">
         <select class="form-control" onchange={{ action "updateServerLocation" }}>
+          <option value="" selected={{eq model.hetznerConfig.serverLocation choice.name}}></option>
           {{#each regionChoices as |choice|}}
             <option value={{choice.name}} selected={{eq model.hetznerConfig.serverLocation choice.name}}>{{choice.city}}</option>
           {{/each}}
@@ -52,6 +53,7 @@
       </div>
       <div class="col-md-4">
         <select class="form-control" onchange={{ action "updateServerType" }}>
+          <option value="" selected={{eq model.hetznerConfig.serverType choice.name}}></option>
           {{#each serverTypeChoices as |choice|}}
             <option value={{choice.name}} selected={{eq model.hetznerConfig.serverType choice.name}}>{{choice.description}} - {{ choice.architecture }} - {{choice.memory}}GB Memory - {{choice.disk}}GB Disk space</option>
           {{/each}}
@@ -62,6 +64,7 @@
       </div>
       <div class="col-md-4">
         <select class="form-control" onchange={{action (mut model.hetznerConfig.imageId) value="target.value" }}>
+          <option value="" selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}></option>
           {{#each imageChoices as |choice|}}
             <option value={{choice.id}} selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}>{{choice.description}}</option>
           {{/each}}
