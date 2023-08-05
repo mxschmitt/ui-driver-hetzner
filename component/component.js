@@ -57,7 +57,6 @@ export default Ember.Component.extend(NodeDriver, {
       additionalKey: [],
       serverType: '',
       serverLocation: '',
-      image: '',
       imageId: "",
       userData: '',
       networks: [],
@@ -172,7 +171,6 @@ export default Ember.Component.extend(NodeDriver, {
       const imageChoices = this.get('imageChoices')
       const imageChoice = imageChoices.filter(i => i.id.toString() === options[0].value)[0]
       this.set('model.%%DRIVERNAME%%Config.imageId', imageChoice.id)
-      this.set('model.%%DRIVERNAME%%Config.image', imageChoice.name)
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)
@@ -204,7 +202,6 @@ export default Ember.Component.extend(NodeDriver, {
     this.set('imageChoices', allImages)
     if (allImages.filter(i => i.id.toString() === this.get('model.%%DRIVERNAME%%Config.imageId')).length === 0) {
       this.set('model.%%DRIVERNAME%%Config.imageId', '')
-      this.set('model.%%DRIVERNAME%%Config.image', '')
     }
     this.set('gettingData', false)
     return allImages

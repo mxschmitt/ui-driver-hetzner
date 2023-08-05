@@ -76,9 +76,9 @@
       </div>
       <div class="col-md-4">
         <select class="form-control" onchange={{action "updateImage" }}>
-          <option value="" selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}></option>
+          <option value="" selected={{eq model.hetznerConfig.imageId choice.id}}></option>
           {{#each imageChoices as |choice|}}
-            <option value={{choice.id}} selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}>{{choice.description}}</option>
+            <option value={{choice.id}} selected={{eq model.hetznerConfig.imageId choice.id}}>{{choice.description}}</option>
           {{/each}}
         </select>
       </div>
