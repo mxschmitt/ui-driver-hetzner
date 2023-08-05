@@ -141,7 +141,7 @@ export default Ember.Component.extend(NodeDriver, {
 
       this.set('model.%%DRIVERNAME%%Config.serverLocation', options[0].value)
       const allNetworks = (await apiRequest(apiKey, '/v1/networks')).networks
-      const regionNetworks = getNetworksByZone(apiKey, regionDetails.network_zone)
+      const regionNetworks = (await getNetworksByZone(apiKey, regionDetails.network_zone))
         .map(i => ({ ...i, id: i.id.toString() }))
       this.set('networkChoices', regionNetworks)
     },
@@ -153,6 +153,13 @@ export default Ember.Component.extend(NodeDriver, {
       const allImages = (await apiRequest(apiKey, '/v1/images', { type: ['system', 'snapshot', 'backup'], architecture: choice.architecture })).images
       this.set('imageChoices', allImages.sort((a, b) => a.name > b.name ? 1 : -1))
       this.set('model.%%DRIVERNAME%%Config.serverType', options[0].value)
+    },
+    aupdateImage(select) {
+      let options = [...select.target.options].filter(o => o.selected)
+      const imageChoices = this.get('imageChoices')
+      const imageChoice = imageChoices.filter(i => i.id.toString() === options[0].value)[0]
+      this.set('model.%%DRIVERNAME%%Config.image', imageChoice.id)
+      this.set('model.%%DRIVERNAME%%Config.imageName', imageChoice.name)
     },
     modifyNetworks: function (select) {
       let options = [...select.target.options].filter(o => o.selected).map(o => o.value)

@@ -63,7 +63,7 @@
         <label class="form-control-static">Image</label>
       </div>
       <div class="col-md-4">
-        <select class="form-control" onchange={{action (mut model.hetznerConfig.imageId) value="target.value" }}>
+        <select class="form-control" onchange={{action "updateImage" }}>
           <option value="" selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}></option>
           {{#each imageChoices as |choice|}}
             <option value={{choice.id}} selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}>{{choice.description}}</option>
