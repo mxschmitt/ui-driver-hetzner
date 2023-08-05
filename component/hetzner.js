@@ -24,6 +24,6 @@ export async function getNetworksByZone(key, zone) {
   const allNetworks = (await apiRequest(key, '/v1/networks')).networks
   return allNetworks
     .filter(i => i.subnets
-    .reduce((acc, a) => acc || a.network_zone === regionDetails.network_zone, false))
+      .reduce((acc, a) => acc || a.network_zone === zone, false))
 }
 
