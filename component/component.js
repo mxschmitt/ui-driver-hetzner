@@ -102,7 +102,7 @@ export default Ember.Component.extend(NodeDriver, {
     getData() {
       this.set('gettingData', true);
       let that = this;
-      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks'), this.apiRequest('/v1/ssh_keys'), this.apiRequest('/v1/firewalls'), this.apiRequest('/v1/placement_groups')]).then(function (responses) {
+      Promise.all([this.apiRequest('/v1/locations'), this.apiRequest('/v1/images?per_page=50'), this.apiRequest('/v1/server_types'), this.apiRequest('/v1/networks'), this.apiRequest('/v1/ssh_keys'), this.apiRequest('/v1/firewalls'), this.apiRequest('/v1/placement_groups')]).then(function (responses) {
         that.setProperties({
           errors: [],
           needAPIToken: false,

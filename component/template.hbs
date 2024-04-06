@@ -53,7 +53,7 @@
       <div class="col-md-4">
         <select class="form-control" onchange={{action (mut model.hetznerConfig.imageId) value="target.value" }}>
           {{#each imageChoices as |choice|}}
-            <option value={{choice.id}} selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}>{{choice.description}}</option>
+            <option value={{choice.id}} selected={{or (eq model.hetznerConfig.imageId choice.id) (eq model.hetznerConfig.image choice.name)}}>{{choice.description}} ({{choice.architecture}})</option>
           {{/each}}
         </select>
       </div>
