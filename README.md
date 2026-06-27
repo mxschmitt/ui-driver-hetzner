@@ -1,5 +1,48 @@
 # Rancher 2 Hetzner Cloud UI Driver
 
+> [!WARNING]
+> ## ⚠️ Deprecated — please migrate to a v3 UI Extension
+>
+> **This project is deprecated, no longer maintained, and does not work on
+> current Rancher.**
+>
+> ### Why it no longer works
+>
+> This driver ships its UI as a compiled Ember `component.js` that Rancher loaded
+> through the legacy **"Custom UI URL"** node-driver field. Rancher replaced its
+> Ember dashboard with a Vue 3 dashboard and moved all node-driver UIs to the new
+> [Rancher UI Extensions](https://extensions.rancher.io/) (v3) framework. The old
+> "Custom UI URL" injection point no longer renders these Ember bundles.
+>
+> Tested on **Rancher v2.14.2**: the driver binary still registers and "Hetzner"
+> still appears in the cluster-creation grid, but selecting it shows a **generic
+> key/value credential editor instead of this driver's custom form** — so the
+> bespoke UI is effectively dead. It also never supported RKE2/K3s provisioning
+> (see [#137](https://github.com/mxschmitt/ui-driver-hetzner/issues/137),
+> [#145](https://github.com/mxschmitt/ui-driver-hetzner/issues/145),
+> [#132](https://github.com/mxschmitt/ui-driver-hetzner/issues/132)).
+>
+> ### Since when / use this instead
+>
+> The Vue dashboard became Rancher's default in **2.6** and the legacy Ember UI
+> was phased out through 2.6/2.7; the v3 UI Extensions framework is the supported
+> model from **Rancher 2.9/2.10 onward**.
+>
+> ➡️ **Use [`bluquist/rancher-node-driver-hetzner`](https://github.com/bluquist/rancher-node-driver-hetzner)**
+> — an actively maintained Rancher **v3 UI Extension** (Vue 3, built on the
+> official [`rancher/ui-plugin-examples`](https://github.com/rancher/ui-plugin-examples/tree/main/pkg/node-driver)
+> node-driver pattern), requires **Rancher ≥ 2.10**, supports **RKE2/K3s**, and
+> handles the API token more securely (it proxies calls through Rancher's
+> credential store instead of sending the raw token from your browser).
+>
+> Install it via **Extensions → Manage Repositories** (add
+> `https://bluquist.github.io/rancher-node-driver-hetzner/`), then apply its
+> NodeDriver YAML (per its README — add it via YAML, **not** the UI). It pairs
+> with the maintained driver-binary fork
+> [`bluquist/docker-machine-driver-hetzner`](https://github.com/bluquist/docker-machine-driver-hetzner).
+>
+> The instructions below are retained for historical reference (Rancher ≤ 2.5).
+
 [![Build Status](https://travis-ci.org/mxschmitt/ui-driver-hetzner.svg?branch=master)](https://travis-ci.org/mxschmitt/ui-driver-hetzner)
 
 Rancher 2.X UI driver for the [Hetzner Cloud](https://www.hetzner.de/cloud). For the Rancher 1 version check out the readme from the `v1.6` branch which you can find [here](https://github.com/mxschmitt/ui-driver-hetzner/blob/v1.6/README.md).
